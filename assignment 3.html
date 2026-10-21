@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<!-- Assignment 3 : CATALOGUE PAGE - details of all books in a table
+     (Cover page, Author, Publisher, Price, Add to cart button) -->
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Catalogue - Online Book Store</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📚</text></svg>">
+<script>
+  // When opened inside the frames of Assignment 1, hide this page's own header and side menu
+  if (window.self !== window.top) document.documentElement.className = "in-frame";
+</script>
+<style>
+  body { margin: 0; font-family: Calibri, Arial, sans-serif; color: #222; }
+  .layout { width: 90%; margin: 20px auto; border-collapse: collapse; border: 1px solid #555; }
+  .layout > tbody > tr > td { border: 1px solid #555; padding: 8px 12px; }
+  .logo, .site-name { background: #f8c08f; text-align: center; font-weight: bold; font-size: 20px; }
+  .nav td { background: #fce4d6; text-align: center; }
+  .nav a { display: block; color: #222; text-decoration: none; }
+  .nav a:hover, .nav a.active { color: #c0392b; font-weight: bold; }
+  .side { width: 130px; vertical-align: top; }
+  .side a { display: block; padding: 8px 0; color: #222; text-decoration: none; }
+  .side a:hover { color: #c0392b; }
+  .content { vertical-align: top; }
+  .in-frame .site-header, .in-frame .side { display: none; }
+  .in-frame .layout { width: 100%; margin: 0; border: none; }
+  .in-frame .layout > tbody > tr > td { border: none; }
+
+  /* Catalogue table */
+  .books { width: 100%; border-collapse: collapse; }
+  .books th, .books td { border: 1px solid #999; padding: 8px; vertical-align: middle; }
+  .books thead th { background: #fce4d6; }
+  .dept-row th { background: #a04000; color: #fff; text-align: left; letter-spacing: 1px; }
+  .cover {
+    width: 80px; height: 100px; margin: auto; color: #fff; font-weight: bold; font-size: 13px;
+    display: flex; align-items: center; justify-content: center; text-align: center;
+    border-radius: 2px 6px 6px 2px; box-shadow: 3px 3px 6px rgba(0,0,0,.35); padding: 4px; box-sizing: border-box;
+  }
+  .price { text-align: center; font-weight: bold; }
+  .add-btn {
+    background: linear-gradient(#ffe68a, #f5b400); border: 1px solid #b38600; border-radius: 6px;
+    padding: 6px 14px; font-size: 15px; cursor: pointer;
+  }
+  .add-btn:hover { background: linear-gradient(#fff0b3, #ffc933); }
+  #filter-info { display: none; margin-bottom: 10px; }
+  #message { color: green; font-weight: bold; min-height: 20px; }
+</style>
+</head>
+<body>
+  <table class="layout">
+    <tr class="site-header">
+      <td class="logo">📚 Logo</td>
+      <td class="site-name" colspan="4">Online Book Store</td>
+    </tr>
+    <tr class="site-header nav">
+      <td><a href="assignment%201.html" target="_top">Home</a></td>
+      <td><a href="assignment%202.html">Login</a></td>
+      <td><a href="assignment%205.html">Registration</a></td>
+      <td><a href="assignment%203.html" class="active">Catalogue</a></td>
+      <td><a href="assignment%204.html">Cart</a></td>
+    </tr>
+    <tr>
+      <td class="side">
+        <a href="#cse">CSE</a>
+        <a href="#ece">ECE</a>
+        <a href="#eee">EEE</a>
+        <a href="#civil">CIVIL</a>
+      </td>
+      <td class="content" colspan="4">
+        <p id="filter-info">Showing <b id="dept-name"></b> books only. <a href="#all">Show all books</a></p>
+        <p id="message"></p>
+
+        <table class="books">
+          <thead>
+            <tr><th>Cover Page</th><th>Book Details</th><th>Price</th><th>Add to Cart</th></tr>
+          </thead>
+          <tbody>
+            <!-- CSE -->
+            <tr class="dept-row cse"><th colspan="4" id="cse">CSE Books</th></tr>
+            <tr class="cse">
+              <td><div class="cover" style="background:#8b1e1e;">XML Bible</div></td>
+              <td>Book : XML Bible<br>Author : Winston<br>Publication : Wiley</td>
+              <td class="price">$40.5</td>
+              <td><button class="add-btn" onclick="addToCart('XML Bible', 40.5)">🛒 Add to cart</button></td>
+            </tr>
+            <tr class="cse">
+              <td><div class="cover" style="background:#1e6b3a;">Artificial Intelligence</div></td>
+              <td>Book : AI<br>Author : S. Russel<br>Publication : Princeton Hall</td>
+              <td class="price">$63</td>
+              <td><button class="add-btn" onclick="addToCart('AI', 63)">🛒 Add to cart</button></td>
+            </tr>
+            <tr class="cse">
+              <td><div class="cover" style="background:#1f4e79;">Java 2</div></td>
+              <td>Book : Java 2<br>Author : Watson<br>Publication : BPB Publications</td>
+              <td class="price">$35.5</td>
+              <td><button class="add-btn" onclick="addToCart('Java 2', 35.5)">🛒 Add to cart</button></td>
+            </tr>
+            <tr class="cse">
+              <td><div class="cover" style="background:#e67e22;">HTML in 24 Hours</div></td>
+              <td>Book : HTML in 24 hours<br>Author : Sam Peter<br>Publication : Sam Publication</td>
+              <td class="price">$50</td>
+              <td><button class="add-btn" onclick="addToCart('HTML in 24 hours', 50)">🛒 Add to cart</button></td>
+            </tr>
+
+            <!-- ECE -->
+            <tr class="dept-row ece"><th colspan="4" id="ece">ECE Books</th></tr>
+            <tr class="ece">
+              <td><div class="cover" style="background:#6c3483;">Electronic Devices</div></td>
+              <td>Book : Electronic Devices and Circuits<br>Author : Boylestad<br>Publication : Pearson</td>
+              <td class="price">$45</td>
+              <td><button class="add-btn" onclick="addToCart('Electronic Devices and Circuits', 45)">🛒 Add to cart</button></td>
+            </tr>
+            <tr class="ece">
+              <td><div class="cover" style="background:#117a65;">Signals &amp; Systems</div></td>
+              <td>Book : Signals and Systems<br>Author : Oppenheim<br>Publication : PHI</td>
+              <td class="price">$55</td>
+              <td><button class="add-btn" onclick="addToCart('Signals and Systems', 55)">🛒 Add to cart</button></td>
+            </tr>
+
+            <!-- EEE -->
+            <tr class="dept-row eee"><th colspan="4" id="eee">EEE Books</th></tr>
+            <tr class="eee">
+              <td><div class="cover" style="background:#b7950b;">Electrical Machinery</div></td>
+              <td>Book : Electrical Machinery<br>Author : P. S. Bimbhra<br>Publication : Khanna</td>
+              <td class="price">$38</td>
+              <td><button class="add-btn" onclick="addToCart('Electrical Machinery', 38)">🛒 Add to cart</button></td>
+            </tr>
+            <tr class="eee">
+              <td><div class="cover" style="background:#943126;">Power Systems</div></td>
+              <td>Book : Power System Engineering<br>Author : C. L. Wadhwa<br>Publication : New Age</td>
+              <td class="price">$42</td>
+              <td><button class="add-btn" onclick="addToCart('Power System Engineering', 42)">🛒 Add to cart</button></td>
+            </tr>
+
+            <!-- CIVIL -->
+            <tr class="dept-row civil"><th colspan="4" id="civil">CIVIL Books</th></tr>
+            <tr class="civil">
+              <td><div class="cover" style="background:#5d6d7e;">Strength of Materials</div></td>
+              <td>Book : Strength of Materials<br>Author : R. K. Bansal<br>Publication : Laxmi</td>
+              <td class="price">$36</td>
+              <td><button class="add-btn" onclick="addToCart('Strength of Materials', 36)">🛒 Add to cart</button></td>
+            </tr>
+            <tr class="civil">
+              <td><div class="cover" style="background:#2e4053;">Surveying</div></td>
+              <td>Book : Surveying Vol. 1<br>Author : B. C. Punmia<br>Publication : Laxmi</td>
+              <td class="price">$30</td>
+              <td><button class="add-btn" onclick="addToCart('Surveying Vol. 1', 30)">🛒 Add to cart</button></td>
+            </tr>
+          </tbody>
+        </table>
+      </td>
+    </tr>
+  </table>
+
+<script>
+  // Add a book to the cart (saved in localStorage so the Cart page can read it)
+  function addToCart(title, price) {
+    var cart = JSON.parse(localStorage.getItem("bookCart") || "{}");
+    if (cart[title]) {
+      cart[title].qty++;
+    } else {
+      cart[title] = { price: price, qty: 1 };
+    }
+    localStorage.setItem("bookCart", JSON.stringify(cart));
+    document.getElementById("message").innerHTML =
+      '"' + title + '" added to cart (quantity: ' + cart[title].qty + '). <a href="assignment%204.html">View Cart</a>';
+  }
+
+  // Show only one department when the URL ends with #cse, #ece, #eee or #civil
+  function filterDepartment() {
+    var dept = location.hash.substring(1).toLowerCase();
+    var valid = ["cse", "ece", "eee", "civil"];
+    var rows = document.querySelectorAll(".books tbody tr");
+    var showAll = valid.indexOf(dept) === -1;
+
+    for (var i = 0; i < rows.length; i++) {
+      rows[i].style.display = (showAll || rows[i].classList.contains(dept)) ? "" : "none";
+    }
+    document.getElementById("filter-info").style.display = showAll ? "none" : "block";
+    document.getElementById("dept-name").textContent = dept.toUpperCase();
+  }
+
+  window.addEventListener("hashchange", filterDepartment);
+  filterDepartment();
+</script>
+</body>
+</html>

@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<!-- Assignment 2 : LOGIN PAGE of the Online Book Store -->
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Login - Online Book Store</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📚</text></svg>">
+<script>
+  // When opened inside the frames of Assignment 1, hide this page's own header and side menu
+  if (window.self !== window.top) document.documentElement.className = "in-frame";
+</script>
+<style>
+  body { margin: 0; font-family: Calibri, Arial, sans-serif; color: #222; }
+  .layout { width: 90%; margin: 20px auto; border-collapse: collapse; border: 1px solid #555; }
+  .layout > tbody > tr > td { border: 1px solid #555; padding: 8px 12px; }
+  .logo, .site-name { background: #f8c08f; text-align: center; font-weight: bold; font-size: 20px; }
+  .nav td { background: #fce4d6; text-align: center; }
+  .nav a { display: block; color: #222; text-decoration: none; }
+  .nav a:hover, .nav a.active { color: #c0392b; font-weight: bold; }
+  .side { width: 130px; vertical-align: top; }
+  .side a { display: block; padding: 8px 0; color: #222; text-decoration: none; }
+  .side a:hover { color: #c0392b; }
+  .content { vertical-align: top; height: 280px; }
+  .in-frame .site-header, .in-frame .side { display: none; }
+  .in-frame .layout { width: 100%; margin: 0; border: none; }
+  .in-frame .layout > tbody > tr > td { border: none; }
+
+  /* Login form */
+  .login-box { width: 340px; margin: 30px auto; text-align: center; }
+  .login-box h3 { margin-top: 0; }
+  .login-box table { margin: 0 auto; }
+  .login-box td { padding: 6px; text-align: right; }
+  .login-box input[type="text"], .login-box input[type="password"] { width: 170px; padding: 4px; border: 2px solid #000; }
+  .buttons { margin-top: 20px; }
+  .buttons input { color: #c00; background: #fff; border: 1px solid #333; padding: 8px 22px; margin: 0 10px; font-size: 16px; cursor: pointer; }
+  .buttons input[type="submit"] { box-shadow: 2px 2px 0 #333; }
+  .buttons input:hover { background: #fce4d6; }
+</style>
+</head>
+<body>
+  <table class="layout">
+    <tr class="site-header">
+      <td class="logo">📚 Logo</td>
+      <td class="site-name" colspan="4">Online Book Store</td>
+    </tr>
+    <tr class="site-header nav">
+      <td><a href="assignment%201.html" target="_top">Home</a></td>
+      <td><a href="assignment%202.html" class="active">Login</a></td>
+      <td><a href="assignment%205.html">Registration</a></td>
+      <td><a href="assignment%203.html">Catalogue</a></td>
+      <td><a href="assignment%204.html">Cart</a></td>
+    </tr>
+    <tr>
+      <td class="side">
+        <a href="assignment%203.html#cse">CSE</a>
+        <a href="assignment%203.html#ece">ECE</a>
+        <a href="assignment%203.html#eee">EEE</a>
+        <a href="assignment%203.html#civil">CIVIL</a>
+      </td>
+      <td class="content" colspan="4">
+        <div class="login-box">
+          <h3>Login Page</h3>
+          <form action="#" method="post">
+            <table>
+              <tr>
+                <td><label for="username">User Name:</label></td>
+                <td><input type="text" id="username" name="username" required></td>
+              </tr>
+              <tr>
+                <td><label for="password">Password:</label></td>
+                <td><input type="password" id="password" name="password" required></td>
+              </tr>
+            </table>
+            <div class="buttons">
+              <input type="submit" value="Submit">
+              <input type="reset" value="Reset">
+            </div>
+          </form>
+        </div>
+      </td>
+    </tr>
+  </table>
+</body>
+</html>

@@ -1,0 +1,568 @@
+<!DOCTYPE html>
+<!--
+  Assignment 10 : Mini project - TO-DO LIST
+  A small static web page that uses topics of HTML, CSS and JavaScript.
+
+  HTML : headings, paragraphs, links, images (SVG), favicon, tables, lists, class, id, forms, navigation bar, comments
+  CSS  : colors, background, margin, padding, width/height, fonts, links, lists, tables, display, inline-block,
+         z-index, float, overflow, round corners, navigation bar, forms, media queries
+  JS   : variables, operators, data types, objects, events, string methods, arrays, if-else, switch,
+         for / for-in / for-of loops, form validation, functions, class & prototypes, `this`, scope & closures
+-->
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>My To-Do List</title>
+<!-- Favicon -->
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>✅</text></svg>">
+<style>
+  /* ---------- Colors (CSS variables) and dark theme ---------- */
+  :root {
+    --bg: #f0f4f8;
+    --card: #ffffff;
+    --text: #1e293b;
+    --muted: #64748b;
+    --primary: #4f46e5;
+    --border: #e2e8f0;
+    --high: #dc2626;
+    --medium: #d97706;
+    --low: #16a34a;
+  }
+  body.dark {
+    --bg: #0f172a;
+    --card: #1e293b;
+    --text: #e2e8f0;
+    --muted: #94a3b8;
+    --border: #334155;
+  }
+
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    font-family: "Segoe UI", Arial, sans-serif;
+    background-color: var(--bg);
+    color: var(--text);
+    transition: background 0.3s, color 0.3s;
+  }
+
+  /* ---------- Navigation bar ---------- */
+  nav {
+    position: sticky;
+    top: 0;
+    z-index: 10;                 /* stays above the page content */
+    background: var(--primary);
+    overflow: hidden;            /* contains the floated items */
+    padding: 0 20px;
+  }
+  nav .brand {
+    float: left;
+    color: #fff;
+    font-size: 22px;
+    font-weight: bold;
+    padding: 14px 0;
+  }
+  nav ul {
+    float: right;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+  nav li { display: inline-block; }
+  nav a, nav button {
+    display: block;
+    color: #fff;
+    text-decoration: none;
+    padding: 16px 14px;
+    background: none;
+    border: none;
+    font-size: 15px;
+    cursor: pointer;
+  }
+  nav a:hover, nav button:hover { background: rgba(255, 255, 255, 0.18); }
+
+  main { max-width: 900px; margin: 25px auto; padding: 0 16px; }
+
+  section {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 14px;          /* round corners */
+    padding: 22px 26px;
+    margin-bottom: 24px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  }
+  h1 { margin: 0 0 6px; }
+  h2 { margin-top: 0; color: var(--primary); }
+  .muted { color: var(--muted); }
+
+  /* ---------- Header with image ---------- */
+  .hero { overflow: hidden; }
+  .hero img { float: right; width: 120px; height: 120px; margin-left: 20px; }
+
+  /* ---------- Form ---------- */
+  form .row { display: flex; gap: 12px; flex-wrap: wrap; margin-bottom: 12px; }
+  form .field { flex: 1 1 180px; }
+  label { display: block; font-weight: 600; margin-bottom: 4px; font-size: 14px; }
+  input[type="text"], input[type="date"], select {
+    width: 100%;
+    padding: 9px 10px;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    background: var(--card);
+    color: var(--text);
+    font-size: 15px;
+  }
+  input:focus, select:focus { outline: 2px solid var(--primary); }
+  .radio-group label { display: inline-block; font-weight: normal; margin-right: 12px; }
+  .error { color: var(--high); font-size: 13px; min-height: 18px; margin: 4px 0 0; }
+
+  .btn {
+    display: inline-block;
+    padding: 9px 18px;
+    border: none;
+    border-radius: 8px;
+    background: var(--primary);
+    color: #fff;
+    font-size: 15px;
+    cursor: pointer;
+  }
+  .btn:hover { opacity: 0.88; }
+  .btn.secondary { background: var(--muted); }
+
+  /* ---------- Filters ---------- */
+  .toolbar { display: flex; gap: 10px; flex-wrap: wrap; align-items: center; margin-bottom: 14px; }
+  .toolbar input { flex: 1 1 200px; }
+  .filter-btn {
+    display: inline-block;
+    padding: 6px 14px;
+    border-radius: 20px;
+    border: 1px solid var(--border);
+    background: transparent;
+    color: var(--text);
+    cursor: pointer;
+  }
+  .filter-btn.active { background: var(--primary); color: #fff; border-color: var(--primary); }
+
+  /* ---------- Task list ---------- */
+  #task-list { list-style: none; padding: 0; margin: 0; max-height: 420px; overflow-y: auto; }
+  #task-list li {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px;
+    border-bottom: 1px solid var(--border);
+    border-left: 5px solid var(--low);
+  }
+  #task-list li.high { border-left-color: var(--high); }
+  #task-list li.medium { border-left-color: var(--medium); }
+  #task-list li.done .title { text-decoration: line-through; color: var(--muted); }
+  #task-list .info { flex: 1; }
+  #task-list .meta { font-size: 13px; color: var(--muted); }
+  .tag {
+    display: inline-block;
+    font-size: 12px;
+    padding: 2px 8px;
+    border-radius: 10px;
+    background: var(--border);
+    margin-right: 6px;
+  }
+  .overdue { color: var(--high); font-weight: bold; }
+  .delete-btn { background: none; border: none; font-size: 18px; cursor: pointer; color: var(--muted); }
+  .delete-btn:hover { color: var(--high); }
+  .empty { text-align: center; color: var(--muted); padding: 20px; }
+
+  /* ---------- Table ---------- */
+  table { width: 100%; border-collapse: collapse; }
+  th, td { padding: 10px; border: 1px solid var(--border); text-align: center; }
+  th { background: var(--primary); color: #fff; }
+  tr:nth-child(even) td { background: rgba(79, 70, 229, 0.05); }
+
+  .progress { height: 14px; background: var(--border); border-radius: 10px; overflow: hidden; margin-top: 14px; }
+  .progress div { height: 100%; width: 0; background: var(--low); transition: width 0.4s; }
+
+  /* ---------- Toast message (uses z-index) ---------- */
+  #toast {
+    position: fixed;
+    bottom: 25px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 100;
+    background: #111827;
+    color: #fff;
+    padding: 10px 20px;
+    border-radius: 8px;
+    display: none;
+  }
+
+  footer { text-align: center; padding: 20px; color: var(--muted); font-size: 14px; }
+
+  /* ---------- Media queries (responsive design) ---------- */
+  @media (max-width: 600px) {
+    nav .brand, nav ul { float: none; text-align: center; }
+    nav .brand { display: block; }
+    nav a, nav button { padding: 10px 8px; }
+    .hero img { float: none; display: block; margin: 0 auto 10px; }
+    section { padding: 16px; }
+    th, td { padding: 6px; font-size: 14px; }
+  }
+</style>
+</head>
+
+<body>
+  <!-- Navigation bar -->
+  <nav>
+    <span class="brand">✅ To-Do</span>
+    <ul>
+      <li><a href="#add">Add Task</a></li>
+      <li><a href="#tasks">Tasks</a></li>
+      <li><a href="#stats">Statistics</a></li>
+      <li><button id="theme-btn" type="button">🌙 Dark</button></li>
+    </ul>
+  </nav>
+
+  <main>
+    <!-- Introduction with an image -->
+    <section class="hero">
+      <img alt="Checklist illustration" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect x='15' y='8' width='70' height='86' rx='8' fill='%23e0e7ff'/%3E%3Crect x='35' y='3' width='30' height='12' rx='4' fill='%234f46e5'/%3E%3Cg stroke='%234f46e5' stroke-width='5' fill='none' stroke-linecap='round'%3E%3Cpath d='M27 33l5 5 9-9M27 55l5 5 9-9M27 77l5 5 9-9'/%3E%3C/g%3E%3Cg fill='%23a5b4fc'%3E%3Crect x='48' y='31' width='28' height='6' rx='3'/%3E%3Crect x='48' y='53' width='28' height='6' rx='3'/%3E%3Crect x='48' y='75' width='28' height='6' rx='3'/%3E%3C/g%3E%3C/svg%3E">
+      <h1>My To-Do List</h1>
+      <p class="muted" id="today"></p>
+      <p>Plan your day, add tasks with a priority and due date, mark them done, and track your progress.
+        Your tasks are saved in the browser, so they are still here when you come back.</p>
+    </section>
+
+    <!-- Add task form -->
+    <section id="add">
+      <h2>Add a Task</h2>
+      <form id="task-form" novalidate>
+        <div class="row">
+          <div class="field">
+            <label for="title">Task</label>
+            <input type="text" id="title" placeholder="e.g. Complete web assignment">
+            <p class="error" id="title-error"></p>
+          </div>
+          <div class="field">
+            <label for="due">Due date</label>
+            <input type="date" id="due">
+            <p class="error" id="due-error"></p>
+          </div>
+        </div>
+        <div class="row">
+          <div class="field">
+            <label for="category">Category</label>
+            <select id="category">
+              <option value="Study">Study</option>
+              <option value="Work">Work</option>
+              <option value="Personal">Personal</option>
+              <option value="Shopping">Shopping</option>
+            </select>
+          </div>
+          <div class="field radio-group">
+            <label>Priority</label>
+            <label><input type="radio" name="priority" value="high"> High</label>
+            <label><input type="radio" name="priority" value="medium" checked> Medium</label>
+            <label><input type="radio" name="priority" value="low"> Low</label>
+          </div>
+        </div>
+        <button type="submit" class="btn">➕ Add Task</button>
+        <button type="reset" class="btn secondary">Clear</button>
+      </form>
+    </section>
+
+    <!-- Task list -->
+    <section id="tasks">
+      <h2>Tasks</h2>
+      <div class="toolbar">
+        <input type="text" id="search" placeholder="🔍 Search tasks...">
+        <button class="filter-btn active" data-filter="all">All</button>
+        <button class="filter-btn" data-filter="active">Active</button>
+        <button class="filter-btn" data-filter="done">Completed</button>
+      </div>
+      <ul id="task-list"></ul>
+      <p style="margin-bottom:0;">
+        <button class="btn secondary" id="clear-done" type="button">Delete completed tasks</button>
+      </p>
+    </section>
+
+    <!-- Statistics table -->
+    <section id="stats">
+      <h2>Statistics</h2>
+      <table>
+        <thead>
+          <tr><th>Priority</th><th>Total</th><th>Completed</th><th>Pending</th></tr>
+        </thead>
+        <tbody id="stats-body"></tbody>
+      </table>
+      <div class="progress"><div id="progress-bar"></div></div>
+      <p class="muted" id="progress-text"></p>
+    </section>
+  </main>
+
+  <footer>Web Designing Workshop (BCS353) &middot; Assignment 10 &middot; <a href="#">Back to top ↑</a></footer>
+
+  <div id="toast"></div>
+
+<script>
+  // ================= Task "class" using constructor function + prototype =================
+  function Task(title, due, category, priority) {
+    this.id = nextId();              // `this` refers to the new object being created
+    this.title = title;
+    this.due = due;                  // string "YYYY-MM-DD" or ""
+    this.category = category;
+    this.priority = priority;        // "high" | "medium" | "low"
+    this.done = false;
+  }
+
+  // Methods shared by all Task objects through the prototype
+  Task.prototype.toggle = function () {
+    this.done = !this.done;
+  };
+  Task.prototype.isOverdue = function () {
+    if (this.done || !this.due) return false;
+    return new Date(this.due) < new Date(new Date().toDateString());
+  };
+
+  // ================= Closure: ID generator remembers `count` between calls =================
+  var nextId = (function () {
+    var count = Date.now();
+    return function () {
+      return ++count;
+    };
+  })();
+
+  // ================= Variables =================
+  var tasks = [];                    // array of Task objects
+  var currentFilter = "all";         // string
+  var STORAGE_KEY = "todoTasks";
+
+  var form = document.getElementById("task-form");
+  var list = document.getElementById("task-list");
+  var searchBox = document.getElementById("search");
+
+  // ================= Save / load (localStorage) =================
+  function save() {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(tasks));
+  }
+
+  function load() {
+    var data = JSON.parse(localStorage.getItem(STORAGE_KEY) || "null");
+    if (data === null) {
+      // First visit: add a few example tasks
+      tasks.push(new Task("Finish Web Designing assignment", "", "Study", "high"));
+      tasks.push(new Task("Buy notebooks", "", "Shopping", "low"));
+      tasks.push(new Task("Revise JavaScript closures", "", "Study", "medium"));
+      tasks[1].done = true;
+      return;
+    }
+    // Rebuild real Task objects so they get the prototype methods again
+    for (var i = 0; i < data.length; i++) {
+      var t = Object.assign(Object.create(Task.prototype), data[i]);
+      tasks.push(t);
+    }
+  }
+
+  // ================= Form validation =================
+  function validate(title, due) {
+    var ok = true;
+    var titleError = "";
+    var dueError = "";
+
+    if (title.length === 0) {
+      titleError = "Please enter a task.";
+      ok = false;
+    } else if (title.length < 3) {
+      titleError = "Task should be at least 3 characters.";
+      ok = false;
+    } else if (title.length > 60) {
+      titleError = "Task should not be more than 60 characters.";
+      ok = false;
+    }
+
+    if (due !== "" && new Date(due) < new Date(new Date().toDateString())) {
+      dueError = "Due date cannot be in the past.";
+      ok = false;
+    }
+
+    document.getElementById("title-error").textContent = titleError;
+    document.getElementById("due-error").textContent = dueError;
+    return ok;
+  }
+
+  // ================= Events =================
+  form.addEventListener("submit", function (event) {
+    event.preventDefault();
+    var title = document.getElementById("title").value.trim();       // string method
+    var due = document.getElementById("due").value;
+    var category = document.getElementById("category").value;
+    var priority = form.querySelector('input[name="priority"]:checked').value;
+
+    if (!validate(title, due)) return;
+
+    // Capitalise first letter (string methods)
+    title = title.charAt(0).toUpperCase() + title.slice(1);
+
+    tasks.unshift(new Task(title, due, category, priority));
+    save();
+    render();
+    form.reset();
+    showToast("Task added: " + title);
+  });
+
+  form.addEventListener("reset", function () {
+    document.getElementById("title-error").textContent = "";
+    document.getElementById("due-error").textContent = "";
+  });
+
+  // One click handler on the list handles all checkboxes and delete buttons (event delegation)
+  list.addEventListener("click", function (event) {
+    var li = event.target.closest("li");
+    if (!li || !li.dataset.id) return;
+    var id = Number(li.dataset.id);
+    var task = tasks.find(function (t) { return t.id === id; });
+
+    if (event.target.matches("input[type=checkbox]")) {
+      task.toggle();
+      showToast(task.done ? "Marked as completed 🎉" : "Marked as active");
+    } else if (event.target.matches(".delete-btn")) {
+      tasks = tasks.filter(function (t) { return t.id !== id; });
+      showToast("Task deleted");
+    } else {
+      return;
+    }
+    save();
+    render();
+  });
+
+  // Filter buttons
+  var filterButtons = document.querySelectorAll(".filter-btn");
+  for (var btn of filterButtons) {                       // for...of loop
+    btn.addEventListener("click", function () {
+      // `this` is the button that was clicked
+      for (var b of filterButtons) b.classList.remove("active");
+      this.classList.add("active");
+      currentFilter = this.dataset.filter;
+      render();
+    });
+  }
+
+  searchBox.addEventListener("input", render);
+
+  document.getElementById("clear-done").addEventListener("click", function () {
+    var before = tasks.length;
+    tasks = tasks.filter(function (t) { return !t.done; });
+    var removed = before - tasks.length;
+    save();
+    render();
+    showToast(removed > 0 ? removed + " completed task(s) deleted" : "No completed tasks to delete");
+  });
+
+  // Dark / light theme
+  var themeBtn = document.getElementById("theme-btn");
+  themeBtn.addEventListener("click", function () {
+    var dark = document.body.classList.toggle("dark");
+    themeBtn.textContent = dark ? "☀️ Light" : "🌙 Dark";
+    localStorage.setItem("todoTheme", dark ? "dark" : "light");
+  });
+
+  // ================= Rendering =================
+  function matchesFilter(task) {
+    switch (currentFilter) {
+      case "active": return !task.done;
+      case "done":   return task.done;
+      default:       return true;
+    }
+  }
+
+  function escapeHtml(text) {
+    return text.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+  }
+
+  function formatDate(dateStr) {
+    if (!dateStr) return "No due date";
+    var d = new Date(dateStr);
+    return d.toLocaleDateString("en-IN", { day: "numeric", month: "short", year: "numeric" });
+  }
+
+  function render() {
+    var query = searchBox.value.trim().toLowerCase();
+    var html = "";
+
+    for (var i = 0; i < tasks.length; i++) {             // classic for loop
+      var t = tasks[i];
+      if (!matchesFilter(t)) continue;
+      if (query && t.title.toLowerCase().indexOf(query) === -1) continue;
+
+      var dueText = t.isOverdue()
+        ? '<span class="overdue">Overdue: ' + formatDate(t.due) + "</span>"
+        : formatDate(t.due);
+
+      html +=
+        '<li data-id="' + t.id + '" class="' + t.priority + (t.done ? " done" : "") + '">' +
+          '<input type="checkbox" ' + (t.done ? "checked" : "") + ' title="Mark as done">' +
+          '<div class="info">' +
+            '<div class="title">' + escapeHtml(t.title) + "</div>" +
+            '<div class="meta"><span class="tag">' + t.category + '</span>' +
+              '<span class="tag">' + t.priority.toUpperCase() + "</span>" + dueText + "</div>" +
+          "</div>" +
+          '<button class="delete-btn" title="Delete">🗑</button>' +
+        "</li>";
+    }
+
+    list.innerHTML = html || '<li class="empty">No tasks to show.</li>';
+    renderStats();
+  }
+
+  function renderStats() {
+    // Object used as a map: priority -> counts
+    var stats = {
+      high:   { total: 0, done: 0 },
+      medium: { total: 0, done: 0 },
+      low:    { total: 0, done: 0 }
+    };
+
+    tasks.forEach(function (t) {
+      stats[t.priority].total++;
+      if (t.done) stats[t.priority].done++;
+    });
+
+    var rows = "";
+    var total = 0, done = 0;
+    for (var p in stats) {                                // for...in loop over object keys
+      var s = stats[p];
+      total += s.total;
+      done += s.done;
+      rows += "<tr><td>" + p.charAt(0).toUpperCase() + p.slice(1) + "</td><td>" + s.total +
+              "</td><td>" + s.done + "</td><td>" + (s.total - s.done) + "</td></tr>";
+    }
+    rows += "<tr><th>Total</th><th>" + total + "</th><th>" + done + "</th><th>" + (total - done) + "</th></tr>";
+    document.getElementById("stats-body").innerHTML = rows;
+
+    var percent = total === 0 ? 0 : Math.round((done / total) * 100);
+    document.getElementById("progress-bar").style.width = percent + "%";
+    document.getElementById("progress-text").textContent =
+      percent === 100 && total > 0 ? "All tasks completed! 🎉" : percent + "% of tasks completed";
+  }
+
+  // ================= Toast message =================
+  var toastTimer;
+  function showToast(message) {
+    var toast = document.getElementById("toast");
+    toast.textContent = message;
+    toast.style.display = "block";
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(function () { toast.style.display = "none"; }, 2000);
+  }
+
+  // ================= Start =================
+  document.getElementById("today").textContent = "Today is " +
+    new Date().toLocaleDateString("en-IN", { weekday: "long", day: "numeric", month: "long", year: "numeric" });
+
+  if (localStorage.getItem("todoTheme") === "dark") {
+    document.body.classList.add("dark");
+    themeBtn.textContent = "☀️ Light";
+  }
+
+  load();
+  render();
+</script>
+</body>
+</html>
