@@ -1,0 +1,30 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Frameset//EN" "http://www.w3.org/TR/html4/frameset.dtd">
+<!--
+  Assignment 1 : HOME PAGE of the Online Book Store (using three frames)
+  Top frame   : Logo, website name and links to Home, Login, Registration, Catalogue, Cart
+  Left frame  : Department links (CSE, ECE, EEE, CIVIL)
+  Right frame : Pages for the links are loaded here. Initially shows the description of the website.
+-->
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <title>Online Book Store - Home</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📚</text></svg>">
+</head>
+
+<frameset rows="120,*" border="1">
+  <!-- Top frame -->
+  <frame src="assignment1_frames/top.html" name="topframe" scrolling="no" noresize>
+
+  <frameset cols="170,*" border="1">
+    <!-- Left frame -->
+    <frame src="assignment1_frames/left.html" name="left" noresize>
+    <!-- Right frame (target for all links) -->
+    <frame src="assignment1_frames/home.html" name="right">
+  </frameset>
+
+  <noframes>
+    <body>Your browser does not support frames.</body>
+  </noframes>
+</frameset>
+</html>

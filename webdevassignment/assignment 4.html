@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<!-- Assignment 4 : CART PAGE - details of the books added to the cart -->
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Cart - Online Book Store</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📚</text></svg>">
+<script>
+  // When opened inside the frames of Assignment 1, hide this page's own header and side menu
+  if (window.self !== window.top) document.documentElement.className = "in-frame";
+</script>
+<style>
+  body { margin: 0; font-family: Calibri, Arial, sans-serif; color: #222; }
+  .layout { width: 90%; margin: 20px auto; border-collapse: collapse; border: 1px solid #555; }
+  .layout > tbody > tr > td { border: 1px solid #555; padding: 8px 12px; }
+  .logo, .site-name { background: #f8c08f; text-align: center; font-weight: bold; font-size: 20px; }
+  .nav td { background: #fce4d6; text-align: center; }
+  .nav a { display: block; color: #222; text-decoration: none; }
+  .nav a:hover, .nav a.active { color: #c0392b; font-weight: bold; }
+  .side { width: 130px; vertical-align: top; }
+  .side a { display: block; padding: 8px 0; color: #222; text-decoration: none; }
+  .side a:hover { color: #c0392b; }
+  .content { vertical-align: top; height: 200px; }
+  .in-frame .site-header, .in-frame .side { display: none; }
+  .in-frame .layout { width: 100%; margin: 0; border: none; }
+  .in-frame .layout > tbody > tr > td { border: none; }
+
+  /* Cart table */
+  .cart { width: 100%; border-collapse: collapse; }
+  .cart th, .cart td { padding: 6px 10px; text-align: left; }
+  .cart th { border-bottom: 2px solid #a04000; }
+  .cart .total td { border-top: 2px solid #a04000; font-weight: bold; }
+  .note { font-size: 14px; color: #666; }
+  button { margin-top: 12px; padding: 6px 14px; cursor: pointer; }
+</style>
+</head>
+<body>
+  <table class="layout">
+    <tr class="site-header">
+      <td class="logo">📚 Logo</td>
+      <td class="site-name" colspan="4">Online Book Store</td>
+    </tr>
+    <tr class="site-header nav">
+      <td><a href="assignment%201.html" target="_top">Home</a></td>
+      <td><a href="assignment%202.html">Login</a></td>
+      <td><a href="assignment%205.html">Registration</a></td>
+      <td><a href="assignment%203.html">Catalogue</a></td>
+      <td><a href="assignment%204.html" class="active">Cart</a></td>
+    </tr>
+    <tr>
+      <td class="side">
+        <a href="assignment%203.html#cse">CSE</a>
+        <a href="assignment%203.html#ece">ECE</a>
+        <a href="assignment%203.html#eee">EEE</a>
+        <a href="assignment%203.html#civil">CIVIL</a>
+      </td>
+      <td class="content" colspan="4">
+        <table class="cart">
+          <thead>
+            <tr><th>Book name</th><th>Price</th><th>Quantity</th><th>Amount</th></tr>
+          </thead>
+          <!-- Sample cart (as given in the question). Replaced by the real cart if books were added from the Catalogue. -->
+          <tbody id="cart-body">
+            <tr><td>Java 2</td><td>$35.5</td><td>2</td><td>$71</td></tr>
+            <tr><td>XML bible</td><td>$40.5</td><td>1</td><td>$40.5</td></tr>
+          </tbody>
+          <tfoot>
+            <tr class="total"><td>Total amount</td><td colspan="3" id="cart-total">$111.5</td></tr>
+          </tfoot>
+        </table>
+        <p class="note" id="cart-note">Showing sample cart. Add books from the <a href="assignment%203.html">Catalogue</a> to see your own cart.</p>
+        <button id="clear-btn" onclick="clearCart()" style="display:none;">Clear Cart</button>
+      </td>
+    </tr>
+  </table>
+
+<script>
+  // Read the cart saved by the Catalogue page and build the table rows
+  function showCart() {
+    var cart = JSON.parse(localStorage.getItem("bookCart") || "{}");
+    var titles = Object.keys(cart);
+    if (titles.length === 0) return;   // keep the sample rows
+
+    var rows = "";
+    var total = 0;
+    for (var i = 0; i < titles.length; i++) {
+      var item = cart[titles[i]];
+      var amount = item.price * item.qty;
+      total += amount;
+      rows += "<tr><td>" + titles[i] + "</td><td>$" + item.price + "</td><td>" +
+              item.qty + "</td><td>$" + amount + "</td></tr>";
+    }
+    document.getElementById("cart-body").innerHTML = rows;
+    document.getElementById("cart-total").textContent = "$" + total;
+    document.getElementById("cart-note").style.display = "none";
+    document.getElementById("clear-btn").style.display = "inline-block";
+  }
+
+  function clearCart() {
+    localStorage.removeItem("bookCart");
+    location.reload();
+  }
+
+  showCart();
+</script>
+</body>
+</html>

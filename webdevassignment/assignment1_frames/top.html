@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Top Frame</title>
+<style>
+  body { margin: 0; font-family: Calibri, Arial, sans-serif; }
+  table { width: 100%; border-collapse: collapse; }
+  td { border: 1px solid #555; padding: 8px; text-align: center; }
+  .logo { width: 150px; background: #f8c08f; font-size: 30px; }
+  .site-name { background: #f8c08f; font-size: 26px; font-weight: bold; letter-spacing: 1px; }
+  .site-name small { display: block; font-size: 13px; font-weight: normal; }
+  .nav td { background: #fce4d6; }
+  .nav a { display: block; color: #222; text-decoration: none; font-size: 17px; }
+  .nav a:hover { color: #c0392b; font-weight: bold; }
+</style>
+</head>
+<body>
+  <table>
+    <tr>
+      <td class="logo" title="Logo">📚</td>
+      <td class="site-name" colspan="4">
+        Online Book Store
+        <small>ABC College of Engineering</small>
+      </td>
+    </tr>
+    <tr class="nav">
+      <!-- target="right" loads every page into the right frame -->
+      <td><a href="home.html" target="right">Home</a></td>
+      <td><a href="../assignment%202.html" target="right">Login</a></td>
+      <td><a href="../assignment%205.html" target="right">Registration</a></td>
+      <td><a href="../assignment%203.html" target="right">Catalogue</a></td>
+      <td><a href="../assignment%204.html" target="right">Cart</a></td>
+    </tr>
+  </table>
+</body>
+</html>
